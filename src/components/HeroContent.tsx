@@ -1,4 +1,12 @@
 export default function HeroContent() {
+  const handleStart = () => {
+    document.getElementById("lessons")?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  const handleLearnMore = () => {
+    document.getElementById("parents")?.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
     <main className="absolute bottom-8 left-8 z-20 max-w-lg">
       <div className="text-left">
@@ -27,10 +35,10 @@ export default function HeroContent() {
 
         {/* Buttons */}
         <div className="flex items-center gap-4 flex-wrap">
-          <button className="px-8 py-3 rounded-full bg-transparent border border-white/30 text-white font-normal text-xs transition-all duration-200 hover:bg-white/10 hover:border-white/50 cursor-pointer">
+          <button onClick={handleLearnMore} className="px-8 py-3 rounded-full bg-transparent border border-white/30 text-white font-normal text-xs transition-all duration-200 hover:bg-white/10 hover:border-white/50 cursor-pointer">
             Узнать больше
           </button>
-          <button className="px-8 py-3 rounded-full bg-white text-black font-normal text-xs transition-all duration-200 hover:bg-white/90 cursor-pointer">
+          <button onClick={handleStart} className="px-8 py-3 rounded-full bg-white text-black font-normal text-xs transition-all duration-200 hover:bg-white/90 cursor-pointer">
             Начать учиться
           </button>
         </div>
