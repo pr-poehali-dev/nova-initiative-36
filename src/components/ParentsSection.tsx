@@ -2,6 +2,8 @@ import { useState } from "react"
 import type React from "react"
 import Icon from "@/components/ui/icon"
 
+const SEND_EMAIL_URL = "https://functions.poehali.dev/1139e312-7519-4bba-9be3-d044053736a6"
+
 const benefits: { icon: string; text: string }[] = [
   { icon: "ShieldCheck", text: "Безопасный контент — только проверенные тексты" },
   { icon: "TrendingUp", text: "Прогресс ребёнка всегда виден родителю" },
@@ -12,10 +14,25 @@ const benefits: { icon: string; text: string }[] = [
 export default function ParentsSection() {
   const [form, setForm] = useState({ name: "", email: "", child: "", message: "" })
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    setLoading(true)
+    setError("")
+    try {
+      await fetch(SEND_EMAIL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+      setSent(true)
+    } catch {
+      setError("Не удалось отправить заявку. Попробуйте ещё раз.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -105,12 +122,14 @@ export default function ParentsSection() {
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-violet-400/50 transition-colors resize-none"
                     />
                   </div>
+                  {error && <p className="text-rose-400 text-xs">{error}</p>}
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                    disabled={loading}
+                    className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Icon name="Send" size={14} />
-                    Отправить заявку
+                    <Icon name={loading ? "Loader" : "Send"} size={14} />
+                    {loading ? "Отправляем..." : "Отправить заявку"}
                   </button>
                 </form>
               </>
